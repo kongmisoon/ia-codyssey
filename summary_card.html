@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>결결이 — 진료 상담 요약 카드</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAF9F6;
+    --surface:#FFFFFF;
+    --ink:#262B29;
+    --ink-soft:#6C716D;
+    --line:#E4E1D9;
+    --sage:#6E8C77;
+    --sage-bg:#EEF2EE;
+    --amber:#B4863B;
+    --amber-bg:#FBF3E4;
+    --clay:#A8583C;
+    --clay-bg:#FBEEE8;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding:40px 20px 80px;
+  }
+
+  .sheet{
+    max-width:760px;
+    margin:0 auto;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:2px;
+    box-shadow:0 1px 2px rgba(38,43,41,0.04);
+  }
+
+  /* Header */
+  .head{
+    padding:36px 40px 28px;
+    border-bottom:1px solid var(--line);
+  }
+  .head-eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-bottom:14px;
+  }
+  .head-title{
+    font-family:'Newsreader',serif;
+    font-weight:500;
+    font-size:30px;
+    line-height:1.25;
+    margin:0 0 6px;
+    color:var(--ink);
+  }
+  .head-sub{
+    font-size:13.5px;
+    color:var(--ink-soft);
+    line-height:1.6;
+    margin:0;
+  }
+  .head-meta{
+    display:flex;
+    gap:22px;
+    margin-top:18px;
+    flex-wrap:wrap;
+  }
+  .meta-item{
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+  .meta-item strong{
+    display:block;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--ink);
+    font-weight:500;
+    margin-top:2px;
+  }
+
+  /* Notice */
+  .notice{
+    margin:24px 40px 0;
+    padding:13px 16px;
+    background:var(--amber-bg);
+    border:1px solid #EAD7B0;
+    border-radius:2px;
+    font-size:12.5px;
+    line-height:1.6;
+    color:#7A5A22;
+  }
+
+  /* Timeline */
+  .timeline{
+    padding:8px 40px 8px;
+  }
+
+  .day{
+    position:relative;
+    padding:28px 0 28px 28px;
+    border-left:2px solid var(--line);
+    margin-left:6px;
+  }
+  .day:last-child{padding-bottom:8px;}
+  .day::before{
+    content:'';
+    position:absolute;
+    left:-7px;
+    top:30px;
+    width:12px;
+    height:12px;
+    border-radius:50%;
+    background:var(--surface);
+    border:2px solid var(--ink-soft);
+  }
+  .day.confirmed::before{
+    border-color:var(--clay);
+    background:var(--clay);
+  }
+
+  .day-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-bottom:4px;
+  }
+  .day-title{
+    font-family:'Newsreader',serif;
+    font-size:19px;
+    font-weight:500;
+    margin:0 0 3px;
+  }
+  .day-desc{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin:0 0 16px;
+    line-height:1.5;
+  }
+
+  .panels{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+  }
+  @media (max-width:600px){
+    .panels{grid-template-columns:1fr;}
+  }
+
+  .panel{
+    border-radius:2px;
+    padding:14px 16px;
+    border:1px solid var(--line);
+  }
+  .panel.pending{background:var(--amber-bg);border-color:#EAD7B0;}
+  .panel.avoid{background:var(--clay-bg);border-color:#EBC9BA;}
+
+  .panel-title{
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:0.03em;
+    margin:0 0 9px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .panel.pending .panel-title{color:#8A661E;}
+  .panel.avoid .panel-title{color:#8A4327;}
+
+  .panel ul{
+    margin:0;
+    padding-left:16px;
+    font-size:12.5px;
+    line-height:1.65;
+    color:var(--ink);
+  }
+  .panel li{margin-bottom:5px;}
+  .panel li:last-child{margin-bottom:0;}
+  .panel li.empty{
+    list-style:none;
+    padding-left:0;
+    color:var(--ink-soft);
+    font-style:italic;
+  }
+
+  .moved-tag{
+    display:inline-block;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:9.5px;
+    background:var(--clay);
+    color:#fff;
+    padding:1px 6px;
+    border-radius:9px;
+    margin-left:5px;
+    vertical-align:middle;
+    letter-spacing:0.02em;
+  }
+
+  .transition-note{
+    margin-top:12px;
+    font-size:11.5px;
+    color:var(--ink-soft);
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .transition-note .arrow{color:var(--clay);font-family:'IBM Plex Mono',monospace;}
+
+  /* Footer */
+  .footer{
+    padding:22px 40px 34px;
+    border-top:1px solid var(--line);
+  }
+  .footer-fixed{
+    font-size:12px;
+    color:var(--ink-soft);
+    line-height:1.6;
+    padding:12px 14px;
+    background:var(--paper);
+    border:1px dashed var(--line);
+    border-radius:2px;
+  }
+  .footer-fixed strong{color:var(--ink);font-weight:600;}
+
+  .actions{
+    max-width:760px;
+    margin:16px auto 0;
+    display:flex;
+    justify-content:flex-end;
+    gap:8px;
+  }
+  .btn{
+    font-family:'Inter',sans-serif;
+    font-size:12.5px;
+    font-weight:500;
+    padding:8px 14px;
+    border-radius:2px;
+    border:1px solid var(--line);
+    background:var(--surface);
+    color:var(--ink);
+    cursor:pointer;
+  }
+  .btn:hover{border-color:var(--ink-soft);}
+
+  @media print{
+    body{padding:0;background:#fff;}
+    .actions{display:none;}
+    .sheet{border:none;box-shadow:none;max-width:100%;}
+    .day::before{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .panel{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+  <div class="head">
+    <div class="head-eyebrow">진료 상담용 요약 카드 · 가상 사례</div>
+    <h1 class="head-title">확인 필요 항목 &amp; 식이 변화 타임라인</h1>
+    <p class="head-sub">난소암 3기 · 5회차 항암(탁센 계열) 진행 중 환자의 3일간 식단 상담 기록을 정리했습니다. 진료 시 이 카드를 보여주시면 어떤 항목이 아직 확인되지 않았는지 빠르게 공유할 수 있습니다.</p>
+    <div class="head-meta">
+      <div class="meta-item">사용 코치 <strong>결결이 (v2)</strong></div>
+      <div class="meta-item">기준 회차 <strong>5회차 / 탁센 계열</strong></div>
+      <div class="meta-item">기록 범위 <strong>1턴 – 10턴</strong></div>
+    </div>
+  </div>
+
+  <div class="notice">
+    이 카드는 대화 요약이며 <strong>의료 조언이 아닙니다.</strong> 모든 최종 판단은 담당 의료진(주치의 · 임상영양사)과 상의해 결정해 주세요.
+  </div>
+
+  <div class="timeline">
+
+    <div class="day">
+      <div class="day-label">Day 1 · 1–4턴</div>
+      <h2 class="day-title">첫 상담 — 수치 미확인 상태로 시작</h2>
+      <p class="day-desc">호중구 수치를 정확히 모른다고 답해, 회피 음식군을 임의로 확정하지 않고 확인 항목으로 분리했습니다.</p>
+      <div class="panels">
+        <div class="panel pending">
+          <p class="panel-title">확인 필요 항목</p>
+          <ul>
+            <li>정확한 호중구 수치 — 생식 제한 필요 여부 판단 근거</li>
+            <li>변비 지속 시 완하제 사용 가능 여부</li>
+          </ul>
+        </div>
+        <div class="panel avoid">
+          <p class="panel-title">피해야 할 음식군 (확정)</p>
+          <ul>
+            <li>기름지고 자극적인 음식 (구역감 악화 우려)</li>
+            <li>탄산음료 · 카페인 과다 섭취</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="day">
+      <div class="day-label">Day 2 · 5–8턴</div>
+      <h2 class="day-title">미각 변화 발생 — 기존 항목은 유지</h2>
+      <p class="day-desc">금속 맛 등 새 부작용이 추가됐지만, 기존 확인 필요 항목을 덮어쓰지 않고 그대로 유지한 채 새 항목만 더했습니다.</p>
+      <div class="panels">
+        <div class="panel pending">
+          <p class="panel-title">확인 필요 항목</p>
+          <ul>
+            <li>정확한 호중구 수치 — 생식 제한 필요 여부 판단 근거</li>
+            <li>변비 지속 시 완하제 사용 가능 여부</li>
+            <li>미각 변화 지속 시 영양 보충 방법</li>
+          </ul>
+        </div>
+        <div class="panel avoid">
+          <p class="panel-title">피해야 할 음식군 (확정)</p>
+          <ul>
+            <li>기름지고 자극적인 음식 (구역감 악화 우려)</li>
+            <li>탄산음료 · 카페인 과다 섭취</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="day confirmed">
+      <div class="day-label">Day 3 · 9–10턴</div>
+      <h2 class="day-title">진료 결과 반영 — 항목 하나만 확정 이동</h2>
+      <p class="day-desc">호중구 수치가 낮다는 진료 결과를 전달받아, 관련된 항목 하나만 "확인 필요"에서 "피해야 할 음식군"으로 옮기고 나머지는 그대로 두었습니다.</p>
+      <div class="panels">
+        <div class="panel pending">
+          <p class="panel-title">확인 필요 항목</p>
+          <ul>
+            <li>변비 지속 시 완하제 사용 가능 여부</li>
+            <li>미각 변화 지속 시 영양 보충 방법</li>
+          </ul>
+        </div>
+        <div class="panel avoid">
+          <p class="panel-title">피해야 할 음식군 (확정)</p>
+          <ul>
+            <li>기름지고 자극적인 음식 (구역감 악화 우려)</li>
+            <li>탄산음료 · 카페인 과다 섭취</li>
+            <li>생식 · 비살균 유제품 <span class="moved-tag">신규 확정</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="transition-note">
+        <span class="arrow">→</span> 진료 확인 결과: 호중구 수치 낮음, 생식 당분간 제한 — 해당 항목만 이동, 나머지 확인 필요 항목은 변경 없음
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <div class="footer-fixed">
+      <strong>이 내용은 참고용이며, 담당 의료진의 판단이 우선합니다.</strong><br>
+      본 카드는 가상 사례를 바탕으로 생성된 자료이며 실제 진단 · 처방을 대신하지 않습니다.
+    </div>
+  </div>
+</div>
+
+<div class="actions">
+  <button class="btn" onclick="window.print()">인쇄 / PDF로 저장</button>
+</div>
+
+</body>
+</html>
